@@ -51,8 +51,6 @@ public class FileUploadLogicService {
 			String originalFilename = multipartFile.getOriginalFilename();
 			storeFilename = createStoreFilename(originalFilename);
 			multipartFile.transferTo(new File(getUploadpath(storeFilename))); 
-			System.out.println("원본파일명:"+originalFilename);
-			System.out.println("저장파일명:"+storeFilename);
 		}
 		return storeFilename;
 	}

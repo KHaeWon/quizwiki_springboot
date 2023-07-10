@@ -109,6 +109,10 @@ xmlns:th="http://www.thymeleaf.org"
 		
 		//문제list
 		problemList = /*[[${problemList}]]*/'';
+		problemList = problemList.map((o)=>{
+			return {...o, solv: ""};
+		});
+		
 	
 		if(problemList.length < 1){
 			Swal.fire({

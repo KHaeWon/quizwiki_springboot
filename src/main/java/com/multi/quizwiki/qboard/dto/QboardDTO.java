@@ -31,5 +31,14 @@ public class QboardDTO {
     
 	////not-column
     private String previewText;
+
+	public QboardDTO(String category, String subject, String title, String content) {
+		this.category = category;
+		this.subject = subject;
+		this.title = title;
+		this.content = content;
+	}
+    
+    
 }
 	

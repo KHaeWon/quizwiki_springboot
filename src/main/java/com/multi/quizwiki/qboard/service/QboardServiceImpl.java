@@ -21,8 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Transactional
 public class QboardServiceImpl implements QboardService {
-	@Autowired
 	QboardDAO qboarddao;
+	
+	@Autowired
+	public QboardServiceImpl(QboardDAO qboarddao) {
+		this.qboarddao =qboarddao;
+	}
 	
 	//게시글 저장
 	@Override
@@ -57,6 +61,7 @@ public class QboardServiceImpl implements QboardService {
 
 	@Override
 	public int update(QboardDTO qboard) {
+		System.out.println(qboard);
 		return qboarddao.update(qboard);
 	}
 

@@ -255,6 +255,38 @@ layout:fragment="content"
 			const front = document.createElement("div");
 			front.classList.add("front");
 			front.classList.add("card-block");
+			switch(problem.subjectName){
+				case'국어':{
+					front.style.backgroundColor = "#ff000033";
+					break;
+				}
+				
+				case'영어':{
+					front.style.backgroundColor = "#ff5b0054";
+					break;
+				}
+				
+				case'수학':{
+					front.style.backgroundColor = "#f2ff0054";
+					break;
+				}
+				
+				case'사회':{
+					front.style.backgroundColor = "#36ff002b";
+					break;
+				}
+				
+				case'과학':{
+					front.style.backgroundColor = "#00dfff2b";
+					break;
+				}
+				
+				case'한국사':{
+					front.style.backgroundColor = "#ff00d72b";
+					break;
+				}
+				
+			}
 			cardFlip.appendChild(front);
 			
 			const title = document.createElement("h1");

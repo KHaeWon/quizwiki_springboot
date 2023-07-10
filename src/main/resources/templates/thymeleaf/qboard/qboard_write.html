@@ -224,6 +224,12 @@ layout:fragment="content">
 		            		category: category.value
             			 }
             	 };
+            	 
+            	 if(!qboard){
+            		 sendData.qboard.qboard_id = new URLSearchParams(window.location.search).get('qboard_id');
+            	 }
+            	 
+            	 
             	 document.getElementById('saveBtn').disabled = true;
 					
                

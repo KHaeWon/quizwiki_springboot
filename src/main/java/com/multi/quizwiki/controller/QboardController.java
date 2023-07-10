@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.multi.quizwiki.common.FileUploadLogicService;
 import com.multi.quizwiki.dto.MemberDTO;
@@ -174,12 +176,14 @@ public class QboardController {
 				boolean isOverflow = false;
 				Document html = Jsoup.parse(q.getContent());
 				
-				for(Element e : html.getAllElements()) {
-					previewText += e.text();
-					if(previewText.length() > 49) {
+				Elements pTags = html.select("p");
+				for(Element pTag : pTags) {
+					previewText += pTag.text();
+					if(previewText.length() > 50) {
 						isOverflow = true;
 						break;
 					}
+					
 				}
 				previewText = previewText.substring(0, Math.min(previewText.length(), 50));
 				if(isOverflow) {
@@ -230,10 +234,49 @@ public class QboardController {
 		return "redirect:/qboard/list.do";
 	}
 	
-	@PostMapping("qboard/update.do")
-	public String updateQboard(QboardDTO qboard) {
-			qboardservice.update(qboard);
-			return "redirect:/qboard/list.do";
+	@PostMapping("/qboard/update.do")
+	public String updateQboard(HttpServletRequest req,
+			@RequestPart(name= "sendData") String sendData,
+			@RequestPart(name = "imageList", required = false) List<MultipartFile> imageList
+			) throws IllegalStateException, IOException {
+		
+		MemberDTO loginUser = util.Utils.getSessionUser(req);
+		if(loginUser == null) {
+			return "notlogin";
+		}
+		
+		String memberId = loginUser.getMember_id();
+		
+		ObjectMapper mapper = new ObjectMapper();
+		Map<String,String> map = mapper.readValue(sendData, Map.class);
+		
+		QboardDTO qboard = mapper.convertValue(map.get("qboard"), QboardDTO.class);
+		
+		qboard.setMember_id(memberId);
+		
+		List<FileRequest> fileReqList = new ArrayList<FileRequest>();
+		
+		if(imageList != null) {
+			
+			for(MultipartFile img : imageList) {
+				String origin = img.getOriginalFilename();
+				String uuid = fileUploadService.uploadFile(img, "qboardimage");
+				
+				fileReqList.add(new FileRequest(origin, uuid, img.getSize()));
+				
+				Document html = Jsoup.parse(qboard.getContent());
+				Elements el = html.select("img[title="+origin+"]");
+				
+				el.attr("src", "/qboard/find/"+uuid);
+				qboard.setContent(html.html());
+			}
+		}
+		
+		fileService.saveFiles(qboard.getQboard_id(), fileReqList);
+		
+		qboardservice.update(qboard);
+		
+		return "true";
 		
 	}
 

@@ -54,7 +54,6 @@
 				AND s.solv_right = 0
 			GROUP BY pc.problem_cate_id
 			ORDER BY wrong_count DESC
-			LIMIT 1
 		) AS t
 		JOIN problem p ON t.problem_cate_id = p.problem_cate_id
 		LEFT JOIN problem_like pl ON p.problem_id = pl.problem_id
